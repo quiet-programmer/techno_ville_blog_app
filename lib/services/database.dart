@@ -23,6 +23,14 @@ class DatabaseService {
     });
   }
 
+  // send comments to post
+  Future<void> updateDatawithComments(
+      dynamic commentData, dynamic documentId) async {
+    postCollections.document(documentId).updateData({
+      "comments": [commentData],
+    });
+  }
+
   // get user data from snapshop
   UserDataModels _userFromSnapshop(DocumentSnapshot snapshot) {
     return UserDataModels(
@@ -41,9 +49,12 @@ class DatabaseService {
   List<PostModel> _postFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.documents.map((doc) {
       return PostModel(
+        docId: doc.documentID,
         title: doc.data['title'] ?? '',
-        authur: doc.data['authur'] ?? '',
+        authur: doc.data['author'] ?? '',
         article: doc.data['article'] ?? '',
+        image: doc.data['imageUrl'] ?? '',
+        time: doc.data['time'] ?? '',
       );
     }).toList();
   }
