@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:techno_vile_blog/models/user_models.dart';
+import 'package:techno_vile_blog/services/database.dart';
 
 class AuthServices {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -27,8 +29,37 @@ class AuthServices {
   }
 
   // sign in with email and pwd
+  Future signInUser(String email, String pwd) async {
+    try {
+      AuthResult result =
+          await _auth.signInWithEmailAndPassword(email: email, password: pwd);
+      FirebaseUser user = result.user;
+      return _userFromFirebaseuser(user);
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
 
   // register with email and pwd
+  Future registerUser(String email, String pwd) async {
+    try {
+      AuthResult results = await _auth.createUserWithEmailAndPassword(
+          email: email, password: pwd);
+      FirebaseUser user = results.user;
+      await DatabaseService(uid: user.uid)
+          .updateUserData("firstName", "lastName");
+      return _userFromFirebaseuser(user);
+    } catch (signUpError) {
+      if (signUpError is PlatformException) {
+        if (signUpError.code == "ERROR_EMAIL_ALREADY_IN_USE") {
+          print("The email address is already in use by another account");
+        }
+      }
+      print(signUpError.toString());
+      return null;
+    }
+  }
 
   // sign out
   Future signout() async {
