@@ -36,6 +36,8 @@ dependencies:
   firebase_messaging: 
   cached_network_image: ^2.3.1
   intl: ^0.16.1
+  flutter_local_notifications:
+  workmanager:
 
 dev_dependencies:
   flutter_test:
