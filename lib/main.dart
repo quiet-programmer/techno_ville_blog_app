@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:techno_vile_blog/services/database.dart';
 import 'package:techno_vile_blog/src/app.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -25,6 +27,8 @@ void showNotification(v, flp) async {
     payload: 'VIS \n $v',
   );
 }
+
+DatabaseService myCall = DatabaseService();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,7 +56,21 @@ void callbackDispatcher() {
     flp.initialize(initSettings);
 
     //TODOfix the notification settinngs
-    showNotification("Love me more", flp);
+    // post collection
+    CollectionReference postCollections =
+        Firestore.instance.collection('postData');
+
+    QuerySnapshot blogSnapshot = await postCollections.getDocuments();
+
+    var title;
+
+    blogSnapshot.documents.forEach((blogPost) {
+      title = blogPost.data['title'];
+
+      return title;
+    });
+
+    showNotification(title, flp);
 
     return Future.value(true);
   });
