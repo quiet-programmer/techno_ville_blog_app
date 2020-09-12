@@ -25,7 +25,7 @@ class DatabaseService {
 
   // send comments to post
   Future<void> updateDatawithComments(
-      dynamic commentData, dynamic documentId) async {
+      List<String> commentData, String documentId) async {
     postCollections.document(documentId).updateData({
       "comments": [commentData],
     });
