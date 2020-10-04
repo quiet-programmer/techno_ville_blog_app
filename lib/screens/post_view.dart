@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:nice_button/NiceButton.dart';
 import 'package:techno_vile_blog/const_value.dart';
 import 'package:techno_vile_blog/models/post_model.dart';
+import 'package:techno_vile_blog/services/database.dart';
 
-class PostView extends StatelessWidget {
+class PostView extends StatefulWidget {
   final PostModel postModel;
 
   PostView({
@@ -12,39 +15,220 @@ class PostView extends StatelessWidget {
     this.postModel,
   }) : super(key: key);
 
-  String readTimestamp(int timestamp) {
-    var now = new DateTime.now();
-    var format = new DateFormat('HH:mm a');
-    var date = new DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
-    var diff = now.difference(date);
-    var time = '';
+  @override
+  _PostViewState createState() => _PostViewState();
+}
 
-    if (diff.inSeconds <= 0 ||
-        diff.inSeconds > 0 && diff.inMinutes == 0 ||
-        diff.inMinutes > 0 && diff.inHours == 0 ||
-        diff.inHours > 0 && diff.inDays == 0) {
-      time = format.format(date);
-    } else if (diff.inDays > 0 && diff.inDays < 7) {
-      if (diff.inDays == 1) {
-        time = diff.inDays.toString() + ' DAY AGO';
-      } else {
-        time = diff.inDays.toString() + ' DAYS AGO';
-      }
-    } else {
-      if (diff.inDays == 7) {
-        time = (diff.inDays / 7).floor().toString() + ' WEEK AGO';
-      } else {
-        time = (diff.inDays / 7).floor().toString() + ' WEEKS AGO';
-      }
-    }
+class _PostViewState extends State<PostView>
+    with SingleTickerProviderStateMixin {
+  final DatabaseService _databaseService = DatabaseService();
 
-    return time;
+  String comments;
+
+  Animation<double> _animation;
+  AnimationController _animationController;
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 260),
+    );
+
+    final curvedAnimation =
+        CurvedAnimation(curve: Curves.easeInOut, parent: _animationController);
+    _animation = Tween<double>(begin: 0, end: 1).animate(curvedAnimation);
+
+    super.initState();
   }
+
+  CollectionReference postData =
+      FirebaseFirestore.instance.collection('postData');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: subColor,
+      endDrawer: Drawer(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionBubble(
+        items: <Bubble>[
+          Bubble(
+            title: "Add Comments",
+            titleStyle: TextStyle(
+              color: Colors.white,
+            ),
+            iconColor: Colors.white,
+            bubbleColor: containerColor,
+            icon: Icons.add_comment,
+            onPress: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (_) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TextField(
+                          // controller: comments,
+                          onChanged: (val) {
+                            comments = val;
+                          },
+                          decoration: InputDecoration(
+                            hintText: "Drop your comments",
+                          ),
+                          maxLines: 10,
+                        ),
+                        SizedBox(
+                          height: 15.0,
+                        ),
+                        NiceButton(
+                          onPressed: () {
+                            if (comments != null) {
+                              _databaseService
+                                  .updateDatawithComments(
+                                      comments, widget.postModel.docId)
+                                  .then((value) => Navigator.of(context).pop());
+                            }
+                          },
+                          text: "Comment",
+                          background: containerColor,
+                          radius: 6.0,
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+          Bubble(
+            title: "Comments",
+            titleStyle: TextStyle(
+              color: Colors.white,
+            ),
+            iconColor: Colors.white,
+            bubbleColor: containerColor,
+            icon: Icons.comment,
+            onPress: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (_) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0, vertical: 10.0),
+                    color: subColor,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: Text(
+                              "All Comments",
+                              style: TextStyle(
+                                fontSize: 25.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 30.0,
+                          ),
+                          FutureBuilder<QuerySnapshot>(
+                            future: postData
+                                .doc(widget.postModel.docId)
+                                .collection("comments")
+                                .get(),
+                            builder: (_, snapshot) {
+                              if (snapshot.hasData) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: snapshot.data.docs
+                                      .map((DocumentSnapshot doc) {
+                                    return Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          height: 100.0,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          color: containerColor,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    "${doc.data()['comments']}",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 18.0,
+                                                    ),
+                                                    softWrap: true,
+                                                  ),
+                                                ),
+                                                Align(
+                                                  alignment:
+                                                      Alignment.bottomLeft,
+                                                  child: Text(
+                                                    "Time: ${DateFormat.jm().format(doc.data()['time'])}",
+                                                    style: TextStyle(
+                                                      color: Colors.grey,
+                                                    ),
+                                                    softWrap: true,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 7.0,
+                                        ),
+                                      ],
+                                    );
+                                  }).toList(),
+                                );
+                              } else if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              } else {
+                                return Center(
+                                  child: Text(
+                                    "No Comments",
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ],
+        onPress: () => _animationController.isCompleted
+            ? _animationController.reverse()
+            : _animationController.forward(),
+        iconColor: Colors.white,
+        backGroundColor: containerColor,
+        iconData: Icons.mode_comment,
+        animation: _animation,
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -60,7 +244,7 @@ class PostView extends StatelessWidget {
                     bottomRight: Radius.circular(6.0),
                   ),
                   image: DecorationImage(
-                    image: NetworkImage(postModel.image),
+                    image: NetworkImage(widget.postModel.image),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -69,7 +253,7 @@ class PostView extends StatelessWidget {
                 height: 15.0,
               ),
               Text(
-                postModel.title,
+                widget.postModel.title,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20.0,
@@ -80,21 +264,21 @@ class PostView extends StatelessWidget {
                 height: 10.0,
               ),
               Text(
-                "writen by ${postModel.authur}",
+                "writen by ${widget.postModel.authur}",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.grey,
                 ),
               ),
               Text(
-                "${DateFormat.yMMMMEEEEd().format(postModel.time.toDate())}",
+                "${DateFormat.yMMMMEEEEd().format(widget.postModel.time.toDate())}",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.grey,
                 ),
               ),
               Text(
-                "${DateFormat.jm().format(postModel.time.toDate())}",
+                "${DateFormat.jm().format(widget.postModel.time.toDate())}",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.grey,
@@ -107,7 +291,7 @@ class PostView extends StatelessWidget {
                 height: 20.0,
               ),
               Text(
-                postModel.article,
+                widget.postModel.article,
                 style: TextStyle(
                   fontSize: 18.0,
                   color: Colors.white,
