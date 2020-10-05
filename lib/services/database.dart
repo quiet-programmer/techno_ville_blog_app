@@ -8,16 +8,16 @@ class DatabaseService {
   DatabaseService({this.uid});
 
   // user collection
-  CollectionReference userCollections =
-      Firestore.instance.collection('userData');
+  CollectionReference _userCollections =
+      FirebaseFirestore.instance.collection('userData');
 
   // post collection
-  CollectionReference postCollections =
-      Firestore.instance.collection('postData');
+  CollectionReference _postCollections =
+      FirebaseFirestore.instance.collection('postData');
 
   // update the user data
   Future updateUserData(String firstName, String lastName) async {
-    return await userCollections.document(uid).setData({
+    return await _userCollections.doc(uid).set({
       "firstName": firstName,
       "lastName": lastName,
     });
@@ -25,42 +25,47 @@ class DatabaseService {
 
   // send comments to post
   Future<void> updateDatawithComments(
-      List<String> commentData, String documentId) async {
-    postCollections.document(documentId).updateData({
-      "comments": [commentData],
+      String commentData, String documentId) async {
+    _postCollections.doc(documentId).collection("comments").add({
+      "comments": commentData,
+      "time": DateTime.now(),
     });
+  }
+
+  getComments(String documentId) async {
+    return await _postCollections.doc(documentId).collection("comments").get();
   }
 
   // get user data from snapshop
   UserDataModels _userFromSnapshop(DocumentSnapshot snapshot) {
     return UserDataModels(
       uid: uid,
-      firstName: snapshot.data['firstName'],
-      lastName: snapshot.data['lastName'],
+      firstName: snapshot.data()['firstName'],
+      lastName: snapshot.data()['lastName'],
     );
   }
 
   // get user info
   Stream<UserDataModels> get userData {
-    return userCollections.document(uid).snapshots().map(_userFromSnapshop);
+    return _userCollections.doc(uid).snapshots().map(_userFromSnapshop);
   }
 
   // list of all post
   List<PostModel> _postFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.documents.map((doc) {
+    return snapshot.docs.map((doc) {
       return PostModel(
-        docId: doc.documentID,
-        title: doc.data['title'] ?? '',
-        authur: doc.data['author'] ?? '',
-        article: doc.data['article'] ?? '',
-        image: doc.data['imageUrl'] ?? '',
-        time: doc.data['time'] ?? '',
+        docId: doc.id,
+        title: doc.data()['title'] ?? '',
+        authur: doc.data()['author'] ?? '',
+        article: doc.data()['article'] ?? '',
+        image: doc.data()['imageUrl'] ?? '',
+        time: doc.data()['time'] ?? '',
       );
     }).toList();
   }
 
   // get post from firestore
   Stream<List<PostModel>> get post {
-    return postCollections.snapshots().map(_postFromSnapshot);
+    return _postCollections.snapshots().map(_postFromSnapshot);
   }
 }
