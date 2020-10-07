@@ -51,7 +51,16 @@ class _PostViewState extends State<PostView>
       backgroundColor: subColor,
       endDrawer: Drawer(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+
+      /// start of action button ///
       floatingActionButton: FloatingActionBubble(
+        onPress: () => _animationController.isCompleted
+            ? _animationController.reverse()
+            : _animationController.forward(),
+        iconColor: Colors.white,
+        backGroundColor: containerColor,
+        iconData: Icons.mode_comment,
+        animation: _animation,
         items: <Bubble>[
           Bubble(
             title: "Add Comments",
@@ -147,6 +156,11 @@ class _PostViewState extends State<PostView>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: snapshot.data.docs
                                       .map((DocumentSnapshot doc) {
+                                    Timestamp datetime = doc.data()['time'];
+                                    var data = DateFormat.MMMd()
+                                        .format(datetime.toDate());
+                                    var time = DateFormat.jm()
+                                        .format(datetime.toDate());
                                     return Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -176,7 +190,7 @@ class _PostViewState extends State<PostView>
                                                   alignment:
                                                       Alignment.bottomLeft,
                                                   child: Text(
-                                                    "Time: ${DateFormat.jm().format(doc.data()['time'])}",
+                                                    "Time: $data, $time",
                                                     style: TextStyle(
                                                       color: Colors.grey,
                                                     ),
@@ -221,14 +235,9 @@ class _PostViewState extends State<PostView>
             },
           ),
         ],
-        onPress: () => _animationController.isCompleted
-            ? _animationController.reverse()
-            : _animationController.forward(),
-        iconColor: Colors.white,
-        backGroundColor: containerColor,
-        iconData: Icons.mode_comment,
-        animation: _animation,
       ),
+
+      /// end of floating action button ///
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
