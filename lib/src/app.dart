@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:techno_vile_blog/const_value.dart';
-import 'package:techno_vile_blog/auth/wrapper.dart';
+import 'package:techno_vile_blog/screens/welcome.dart';
 import 'package:techno_vile_blog/services/auth.dart';
 import 'package:techno_vile_blog/widgets/messaging_widget.dart';
 
@@ -45,7 +45,7 @@ class _AppState extends State<App> {
             ),
           ),
         ),
-        home: Wrapper(),
+        home: WelcomeScreen(),
       ),
     );
   }
