@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/material.dart';
@@ -176,14 +177,18 @@ class _PostViewState extends State<PostView>
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                Expanded(
-                                                  child: Text(
-                                                    "${doc.data()['comments']}",
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 18.0,
-                                                    ),
-                                                    softWrap: true,
+                                                Flexible(
+                                                  child: ListView(
+                                                    children: [
+                                                      Text(
+                                                        "${doc.data()['comments']}",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 18.0,
+                                                        ),
+                                                        softWrap: true,
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
                                                 Align(
@@ -252,10 +257,12 @@ class _PostViewState extends State<PostView>
                     bottomLeft: Radius.circular(6.0),
                     bottomRight: Radius.circular(6.0),
                   ),
-                  image: DecorationImage(
-                    image: NetworkImage(widget.postModel.image),
-                    fit: BoxFit.cover,
-                  ),
+                ),
+                child: CachedNetworkImage(
+                  imageUrl: widget.postModel.image,
+                  fit: BoxFit.cover,
+                  height: 350.0,
+                  width: MediaQuery.of(context).size.width,
                 ),
               ),
               SizedBox(
