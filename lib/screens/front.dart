@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nice_button/NiceButton.dart';
+import 'package:techno_vile_blog/auth/resgiter.dart';
 import 'package:techno_vile_blog/auth/signin.dart';
 import 'package:techno_vile_blog/const_value.dart';
 
@@ -40,7 +41,11 @@ class FrontScreen extends StatelessWidget {
                   height: 150.0,
                 ),
                 NiceButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                      return RegsiterScreen();
+                    }));
+                  },
                   radius: 16.0,
                   text: "Create an Account",
                   textColor: Colors.black,
