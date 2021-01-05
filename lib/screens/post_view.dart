@@ -31,16 +31,16 @@ class _PostViewState extends State<PostView>
 
   @override
   void initState() {
+    super.initState();
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 260),
     );
 
+    // animation for bubble up
     final curvedAnimation =
         CurvedAnimation(curve: Curves.easeInOut, parent: _animationController);
     _animation = Tween<double>(begin: 0, end: 1).animate(curvedAnimation);
-
-    super.initState();
   }
 
   CollectionReference postData =
@@ -153,65 +153,70 @@ class _PostViewState extends State<PostView>
                                 .get(),
                             builder: (_, snapshot) {
                               if (snapshot.hasData) {
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: snapshot.data.docs
-                                      .map((DocumentSnapshot doc) {
-                                    Timestamp datetime = doc.data()['time'];
-                                    var data = DateFormat.MMMd()
-                                        .format(datetime.toDate());
-                                    var time = DateFormat.jm()
-                                        .format(datetime.toDate());
-                                    return Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          height: 100.0,
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          color: containerColor,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Flexible(
-                                                  child: ListView(
-                                                    children: [
-                                                      Text(
-                                                        "${doc.data()['comments']}",
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 18.0,
+                                return Container(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: snapshot.data.docs
+                                        .map((DocumentSnapshot doc) {
+                                      Timestamp datetime = doc.data()['time'];
+                                      var data = DateFormat.MMMd()
+                                          .format(datetime.toDate());
+                                      var time = DateFormat.jm()
+                                          .format(datetime.toDate());
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            height: 100.0,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            color: containerColor,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Flexible(
+                                                    child: ListView(
+                                                      children: [
+                                                        Text(
+                                                          "${doc.data()['comments']}",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 18.0,
+                                                          ),
+                                                          softWrap: true,
                                                         ),
-                                                        softWrap: true,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Align(
-                                                  alignment:
-                                                      Alignment.bottomLeft,
-                                                  child: Text(
-                                                    "Time: $data, $time",
-                                                    style: TextStyle(
-                                                      color: Colors.grey,
+                                                      ],
                                                     ),
-                                                    softWrap: true,
                                                   ),
-                                                ),
-                                              ],
+                                                  Align(
+                                                    alignment:
+                                                        Alignment.bottomLeft,
+                                                    child: Text(
+                                                      "Time: $data, $time",
+                                                      style: TextStyle(
+                                                        color: Colors.grey,
+                                                      ),
+                                                      softWrap: true,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          height: 7.0,
-                                        ),
-                                      ],
-                                    );
-                                  }).toList(),
+                                          SizedBox(
+                                            height: 7.0,
+                                          ),
+                                        ],
+                                      );
+                                    }).toList(),
+                                  ),
                                 );
                               } else if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
