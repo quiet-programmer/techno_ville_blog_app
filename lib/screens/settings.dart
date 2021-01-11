@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:techno_vile_blog/const_value.dart';
 import 'package:techno_vile_blog/models/user_models.dart';
@@ -13,6 +16,18 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   AuthServices _userAuth = AuthServices();
+
+  File _selectedImage;
+  final picker = ImagePicker();
+
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      _selectedImage = File(pickedFile.path);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserModels>(context);
@@ -23,20 +38,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
           child: Column(
             children: [
-              Container(
-                height: 150.0,
-                width: 150.0,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(50.0)),
-                child: Icon(
-                  Icons.person,
-                  color: Colors.grey,
-                ),
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
               StreamBuilder<UserDataModels>(
                 stream: DatabaseService(uid: user.uid).userData,
                 builder: (context, snapshot) {
@@ -45,6 +46,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     return Container(
                         child: Column(
                       children: [
+                        _selectedImage != null
+                            ? InkWell(
+                                onTap: () => getImage(),
+                                child: Container(
+                                  height: 150.0,
+                                  width: 150.0,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(50.0),
+                                    image: DecorationImage(
+                                      image: FileImage(_selectedImage),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : InkWell(
+                                onTap: () => getImage(),
+                                child: Container(
+                                  height: 150.0,
+                                  width: 150.0,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius:
+                                          BorderRadius.circular(50.0)),
+                                  child: Icon(
+                                    Icons.person,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
                         userInfo != null
                             ? Text(
                                 "${userInfo.firstName} ${userInfo.lastName}",
