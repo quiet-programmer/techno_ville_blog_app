@@ -39,6 +39,7 @@ app.*.symbols
 
 # Google Json File
 /android/app/google-services.json
+/android/app/build.gradle
 
 # Obfuscation related
 app.*.map.json
