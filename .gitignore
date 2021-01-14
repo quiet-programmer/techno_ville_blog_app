@@ -38,7 +38,7 @@ lib/generated_plugin_registrant.dart
 app.*.symbols
 
 # Google Json File
-android/app/google-services.json
+/android/app/google-services.json
 
 # Obfuscation related
 app.*.map.json
