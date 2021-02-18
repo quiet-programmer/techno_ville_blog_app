@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:techno_vile_blog/const_value.dart';
 import 'package:techno_vile_blog/models/post_model.dart';
+import 'package:techno_vile_blog/provider/theme_provider.dart';
 import 'package:techno_vile_blog/screens/post_view.dart';
 
 class PostTile extends StatefulWidget {
@@ -16,6 +18,7 @@ class PostTile extends StatefulWidget {
 class _PostTileState extends State<PostTile> {
   @override
   Widget build(BuildContext context) {
+    final checkTheme = Provider.of<ThemeProvider>(context);
     return Column(
       children: [
         InkWell(
@@ -26,12 +29,11 @@ class _PostTileState extends State<PostTile> {
           },
           child: Container(
             child: Card(
-              color: containerColor,
+              color: checkTheme.isLight ? boxColor : containerColor,
               child: ListTile(
                 title: Text(
                   "${widget.posts.title}",
                   style: TextStyle(
-                    color: Colors.white,
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
                   ),
