@@ -15,12 +15,17 @@ class DatabaseService {
   CollectionReference _postCollections =
       FirebaseFirestore.instance.collection('postData');
 
-  // update the user data
-  Future updateUserData(String firstName, String lastName) async {
+  // set the user data
+  Future setUserData(String firstName, String lastName) async {
     return await _userCollections.doc(uid).set({
       "firstName": firstName,
       "lastName": lastName,
     });
+  }
+
+  // update the user data
+  Future updateUserData(userData) async {
+    return await _userCollections.doc(uid).set(userData);
   }
 
   // send comments to post
