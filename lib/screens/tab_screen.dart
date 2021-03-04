@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:techno_vile_blog/const_value.dart';
+import 'package:techno_vile_blog/provider/theme_provider.dart';
 import 'package:techno_vile_blog/screens/home.dart';
 import 'package:techno_vile_blog/screens/settings.dart';
 
@@ -29,37 +32,32 @@ class _TabScreenState extends State<TabScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final checkTheme = Provider.of<ThemeProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Image.asset(
-          'assets/images/techno_vile.png',
-          width: 200.0,
-          height: 150.0,
-        ),
+        title: checkTheme.isLight ? darkTabLogo() : lightTabLogo(),
         centerTitle: true,
         actions: [
-          // FlatButton.icon(
-          //   onPressed: () async {
-          //     await _userAuth.signout();
-          //   },
-          //   icon: Icon(Icons.person, color: Colors.white),
-          //   label: Text(
-          //     "Sign out",
-          //     style: TextStyle(
-          //       color: Colors.white,
-          //     ),
-          //   ),
-          // )
+          IconButton(
+            icon: Icon(
+              checkTheme.isLight
+                  ? FontAwesomeIcons.moon
+                  : FontAwesomeIcons.lightbulb,
+            ),
+            onPressed: () {
+              checkTheme.changeTheme();
+            },
+          ),
         ],
       ),
       body: _pages[_selectedPageIndex]['page'],
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectPage,
-        backgroundColor: subColor,
-        selectedItemColor: Colors.white,
+        backgroundColor: checkTheme.isLight ? boxColor : backColor,
+        selectedItemColor: checkTheme.isLight ? Colors.black : Colors.white,
         // unselectedItemColor: realColor,
         unselectedIconTheme: IconThemeData(
-          color: Colors.white,
+          color: checkTheme.isLight ? Colors.black : Colors.white,
         ),
         unselectedLabelStyle: TextStyle(
           color: subColor,
