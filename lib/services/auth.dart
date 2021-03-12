@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:techno_vile_blog/models/user_models.dart';
 import 'package:techno_vile_blog/services/database.dart';
 
@@ -29,12 +29,31 @@ class AuthServices {
   }
 
   // sign in with email and pwd
-  Future signInUser(String email, String pwd) async {
+  Future signInUser(String email, String pwd, {context}) async {
     try {
-      UserCredential result =
-          await _auth.signInWithEmailAndPassword(email: email, password: pwd);
-      User user = result.user;
-      return _userFromFirebaseuser(user);
+      await _auth
+          .signInWithEmailAndPassword(email: email, password: pwd)
+          .then((result) {
+        User user = result.user;
+        return _userFromFirebaseuser(user);
+      }).catchError((err) {
+        if (err.code == 'user-not-found') {
+          Flushbar(
+            message: "No user found for that email.",
+            duration: Duration(seconds: 7),
+          )..show(context);
+        } else if (err.code == 'wrong-password') {
+          Flushbar(
+            message: "Wrong password provided.",
+            duration: Duration(seconds: 7),
+          )..show(context);
+        } else {
+          Flushbar(
+            message: "Internal Error: Something went wrong.",
+            duration: Duration(seconds: 7),
+          )..show(context);
+        }
+      });
     } catch (e) {
       print(e.toString());
       return null;
@@ -47,15 +66,9 @@ class AuthServices {
       UserCredential results = await _auth.createUserWithEmailAndPassword(
           email: email, password: pwd);
       User user = results.user;
-      await DatabaseService(uid: user.uid)
-          .updateUserData("firstName", "lastName");
+      await DatabaseService(uid: user.uid).setUserData("firstName", "lastName");
       return _userFromFirebaseuser(user);
     } catch (signUpError) {
-      if (signUpError is PlatformException) {
-        if (signUpError.code == "ERROR_EMAIL_ALREADY_IN_USE") {
-          print("The email address is already in use by another account");
-        }
-      }
       print(signUpError.toString());
       return null;
     }
