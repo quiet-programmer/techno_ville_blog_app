@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:techno_vile_blog/auth/wrapper.dart';
 import 'package:techno_vile_blog/const_value.dart';
+import 'package:techno_vile_blog/provider/theme_provider.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -22,27 +24,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final checkTheme = Provider.of<ThemeProvider>(context);
     return Scaffold(
-      backgroundColor: subColor,
-      appBar: AppBar(
-        elevation: 0.0,
-        backgroundColor: Colors.transparent,
-      ),
+      backgroundColor: checkTheme.isLight ? backColorOne : backColor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                'assets/images/techno.png',
-                width: 150.0,
-                height: 150.0,
-              ),
+              checkTheme.isLight ? darkLogo() : lightLogo(),
               Text(
                 "Techno Ville",
                 style: TextStyle(
-                  color: Colors.white,
                   fontSize: 25.0,
                 ),
               ),
