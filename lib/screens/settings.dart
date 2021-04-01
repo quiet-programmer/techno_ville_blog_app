@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:techno_vile_blog/const_value.dart';
 import 'package:techno_vile_blog/models/user_models.dart';
+import 'package:techno_vile_blog/provider/theme_provider.dart';
 import 'package:techno_vile_blog/services/auth.dart';
 import 'package:techno_vile_blog/services/database.dart';
 
@@ -31,8 +32,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserModels>(context);
+    final checkTheme = Provider.of<ThemeProvider>(context);
     return Scaffold(
-      backgroundColor: subColor,
+      backgroundColor: checkTheme.isLight ? backColorOne : backColor,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
@@ -80,21 +82,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         SizedBox(
                           height: 10.0,
                         ),
-                        userInfo != null
-                            ? Text(
-                                "${userInfo.firstName} ${userInfo.lastName}",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20.0,
-                                ),
-                              )
-                            : Text(
-                                "Welcome Anon",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20.0,
-                                ),
-                              ),
+                        Text(
+                          "${userInfo.firstName} ${userInfo.lastName}",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                          ),
+                        ),
                       ],
                     ));
                   } else if (snapshot.connectionState ==
@@ -102,26 +95,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     return Text(
                       "...",
                       style: TextStyle(
-                        color: Colors.white,
                         fontSize: 20.0,
                       ),
                     );
                   } else {
                     return Column(
                       children: [
-                        Text(
-                          "Something went wrong",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20.0,
+                        Container(
+                          height: 150.0,
+                          width: 150.0,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(50.0)),
+                          child: Icon(
+                            Icons.person,
+                            color: Colors.grey,
                           ),
                         ),
                         SizedBox(
-                          height: 5,
+                          height: 10.0,
                         ),
-                        FlatButton(
-                          onPressed: () {},
-                          child: Text("Refresh"),
+                        Text(
+                          "Welcome Anon",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                          ),
                         ),
                       ],
                     );
@@ -137,15 +135,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 title: Text(
                   "Notifications",
                   style: TextStyle(
-                    color: Colors.white,
                     fontSize: 20.0,
                   ),
                 ),
                 subtitle: Text(
                   "enable to get notify for new contact or events",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
+                  style: TextStyle(),
                 ),
               ),
               Divider(
@@ -158,19 +153,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 title: Text(
                   "About App",
                   style: TextStyle(
-                    color: Colors.white,
                     fontSize: 20.0,
                   ),
                 ),
                 subtitle: Text(
                   "brift info about the app",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
+                  style: TextStyle(),
                 ),
                 trailing: Icon(
                   Icons.info_outline,
-                  color: Colors.white,
                 ),
               ),
               Divider(
@@ -183,19 +174,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 title: Text(
                   "Rate App",
                   style: TextStyle(
-                    color: Colors.white,
                     fontSize: 20.0,
                   ),
                 ),
                 subtitle: Text(
                   "how is your experience with the app, please tell us",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
+                  style: TextStyle(),
                 ),
                 trailing: Icon(
                   Icons.rate_review,
-                  color: Colors.white,
                 ),
               ),
               Divider(
@@ -208,19 +195,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 title: Text(
                   "App Liences",
                   style: TextStyle(
-                    color: Colors.white,
                     fontSize: 20.0,
                   ),
                 ),
                 subtitle: Text(
                   "get to see what the app has access to",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
+                  style: TextStyle(),
                 ),
                 trailing: Icon(
                   Icons.library_books,
-                  color: Colors.white,
                 ),
                 onTap: () {
                   showDialog(
