@@ -17,6 +17,7 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         StreamProvider.value(
+          initialData: null,
           value: AuthServices().user,
         ),
         ChangeNotifierProvider.value(
