@@ -45,8 +45,8 @@ class DatabaseService {
   UserDataModels _userFromSnapshop(DocumentSnapshot snapshot) {
     return UserDataModels(
       uid: uid,
-      firstName: snapshot.data()['firstName'],
-      lastName: snapshot.data()['lastName'],
+      firstName: snapshot.get('firstName'),
+      lastName: snapshot.get('lastName'),
     );
   }
 
@@ -60,11 +60,11 @@ class DatabaseService {
     return snapshot.docs.map((doc) {
       return PostModel(
         docId: doc.id,
-        title: doc.data()['title'] ?? '',
-        authur: doc.data()['author'] ?? '',
-        article: doc.data()['article'] ?? '',
-        image: doc.data()['imageUrl'] ?? '',
-        time: doc.data()['time'] ?? '',
+        title: doc.get('title') ?? '',
+        authur: doc.get('author') ?? '',
+        article: doc.get('article') ?? '',
+        image: doc.get('imageUrl') ?? '',
+        time: doc.get('time') ?? '',
       );
     }).toList();
   }
