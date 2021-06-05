@@ -3,7 +3,7 @@ import 'package:nice_button/NiceButton.dart';
 import 'package:provider/provider.dart';
 import 'package:techno_vile_blog/const_value.dart';
 import 'package:techno_vile_blog/models/user_models.dart';
-import 'package:techno_vile_blog/services/auth.dart';
+import 'package:techno_vile_blog/provider/theme_provider.dart';
 import 'package:techno_vile_blog/services/database.dart';
 
 class RegFinal extends StatefulWidget {
@@ -12,43 +12,27 @@ class RegFinal extends StatefulWidget {
 }
 
 class _RegFinalState extends State<RegFinal> {
-  final AuthServices _userAuth = AuthServices();
-
   final _formKey = GlobalKey<FormState>();
 
-  String firstName = '';
-  String lastName = '';
+  TextEditingController _firstName = TextEditingController();
+  TextEditingController _lastName = TextEditingController();
+
   String errorText = '';
+
+  @override
+  void dispose() {
+    super.dispose();
+    _firstName.dispose();
+    _lastName.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserModels>(context);
+    final checkTheme = Provider.of<ThemeProvider>(context);
     return Scaffold(
-      backgroundColor: subColor,
-      appBar: AppBar(
-        actions: [
-          FlatButton.icon(
-            onPressed: () async {
-              dynamic result = await _userAuth.anonSingin();
-
-              if (result == null) {
-                print("Something went wrong");
-              } else {
-                Navigator.of(context).pop();
-                print("Signed in");
-                print(result.uid);
-              }
-            },
-            icon: Icon(Icons.person_pin_circle, color: Colors.white),
-            label: Text(
-              "Sign in Anon",
-              style: TextStyle(
-                color: Colors.white,
-              ),
-            ),
-          )
-        ],
-      ),
+      backgroundColor: backColor,
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
@@ -58,43 +42,25 @@ class _RegFinalState extends State<RegFinal> {
               key: _formKey,
               child: Column(
                 children: [
-                  Image.asset(
-                    'assets/images/techno.png',
-                    width: 150.0,
-                    height: 150.0,
-                  ),
+                  checkTheme.isLight ? darkLogo() : lightLogo(),
                   Text(
                     "Setup Profile",
                     style: TextStyle(
-                      color: Colors.white,
                       fontSize: 25.0,
                     ),
                   ),
                   Text(
                     "Please you might not be allowed to change or edit this, input you correct names",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
+                    style: TextStyle(),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
                     height: 70.0,
                   ),
-                  Text(
-                    errorText,
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15.0,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
                   Container(
                     padding: const EdgeInsets.all(10.0),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: containerColor,
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: TextFormField(
@@ -105,17 +71,13 @@ class _RegFinalState extends State<RegFinal> {
                           return null;
                         }
                       },
-                      onChanged: (val) {
-                        firstName = val;
-                      },
+                      controller: _firstName,
                       decoration: InputDecoration(
                         hintText: "First Name",
                         enabledBorder: InputBorder.none,
+                        border: InputBorder.none,
                       ),
-                      style: TextStyle(
-                        color: subColor,
-                      ),
-                      textCapitalization: TextCapitalization.characters,
+                      style: TextStyle(),
                     ),
                   ),
                   SizedBox(
@@ -124,7 +86,7 @@ class _RegFinalState extends State<RegFinal> {
                   Container(
                     padding: const EdgeInsets.all(10.0),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: containerColor,
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: TextFormField(
@@ -135,16 +97,13 @@ class _RegFinalState extends State<RegFinal> {
                           return null;
                         }
                       },
-                      onChanged: (val) {
-                        lastName = val;
-                      },
+                      controller: _lastName,
                       decoration: InputDecoration(
                         hintText: "Last Name",
                         enabledBorder: InputBorder.none,
+                        border: InputBorder.none,
                       ),
-                      style: TextStyle(
-                        color: subColor,
-                      ),
+                      style: TextStyle(),
                     ),
                   ),
                   SizedBox(
@@ -153,8 +112,10 @@ class _RegFinalState extends State<RegFinal> {
                   NiceButton(
                     onPressed: () async {
                       if (_formKey.currentState.validate()) {
+                        var firstName = _firstName.text;
+                        var lastName = _lastName.text;
                         DatabaseService(uid: user.uid)
-                            .updateUserData(firstName, lastName);
+                            .setUserData(firstName, lastName);
                         print("Account Created");
                         Navigator.of(context).pop();
                       }
