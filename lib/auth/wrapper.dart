@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:techno_vile_blog/auth/signin.dart';
 import 'package:techno_vile_blog/models/user_models.dart';
-import 'package:techno_vile_blog/screens/front.dart';
 import 'package:techno_vile_blog/screens/tab_screen.dart';
 
 class Wrapper extends StatelessWidget {
@@ -9,7 +9,7 @@ class Wrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = Provider.of<UserModels>(context);
     if (user == null) {
-      return FrontScreen();
+      return SigninScreen();
     } else {
       return TabScreen();
     }
