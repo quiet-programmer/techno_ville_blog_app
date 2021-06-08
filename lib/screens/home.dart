@@ -122,6 +122,7 @@ class _HomeState extends State<Home> {
                 height: 15.0,
               ),
               StreamProvider<List<PostModel>>.value(
+                initialData: [],
                 value: DatabaseService().post,
                 child: PostList(),
               ),
