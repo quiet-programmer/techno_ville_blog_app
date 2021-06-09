@@ -8,8 +8,7 @@ class FrontScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: subColor,
-      appBar: AppBar(),
+      backgroundColor: backColor,
       body: Container(
         height: MediaQuery.of(context).size.height,
         child: Center(
@@ -17,6 +16,7 @@ class FrontScreen extends StatelessWidget {
             padding:
                 const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Image.asset(
                   'assets/images/techno.png',
@@ -26,14 +26,12 @@ class FrontScreen extends StatelessWidget {
                 Text(
                   "Your Number One",
                   style: TextStyle(
-                    color: Colors.white,
                     fontSize: 25.0,
                   ),
                 ),
                 Text(
                   "Tech Hotspot",
                   style: TextStyle(
-                    color: Colors.white,
                     fontSize: 25.0,
                   ),
                 ),
@@ -64,6 +62,9 @@ class FrontScreen extends StatelessWidget {
                   text: "Login Here",
                   textColor: Colors.black,
                   background: Colors.white,
+                ),
+                SizedBox(
+                  height: 100.0,
                 ),
               ],
             ),
