@@ -4,8 +4,10 @@ import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nice_button/NiceButton.dart';
+import 'package:provider/provider.dart';
 import 'package:techno_vile_blog/const_value.dart';
 import 'package:techno_vile_blog/models/post_model.dart';
+import 'package:techno_vile_blog/provider/theme_provider.dart';
 import 'package:techno_vile_blog/services/database.dart';
 
 class PostView extends StatefulWidget {
@@ -48,8 +50,9 @@ class _PostViewState extends State<PostView>
 
   @override
   Widget build(BuildContext context) {
+    final checkTheme = Provider.of<ThemeProvider>(context);
     return Scaffold(
-      backgroundColor: subColor,
+      backgroundColor: checkTheme.isLight ? backColorOne : backColor,
       endDrawer: Drawer(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
 
@@ -58,18 +61,16 @@ class _PostViewState extends State<PostView>
         onPress: () => _animationController.isCompleted
             ? _animationController.reverse()
             : _animationController.forward(),
-        iconColor: Colors.white,
-        backGroundColor: containerColor,
+        iconColor: checkTheme.isLight ? Colors.black : Colors.white,
+        backGroundColor: checkTheme.isLight ? boxColor : containerColor,
         iconData: Icons.mode_comment,
         animation: _animation,
         items: <Bubble>[
           Bubble(
             title: "Add Comments",
-            titleStyle: TextStyle(
-              color: Colors.white,
-            ),
-            iconColor: Colors.white,
-            bubbleColor: containerColor,
+            titleStyle: TextStyle(),
+            iconColor: checkTheme.isLight ? Colors.black : Colors.white,
+            bubbleColor: checkTheme.isLight ? boxColor : containerColor,
             icon: Icons.add_comment,
             onPress: () {
               showModalBottomSheet(
@@ -116,11 +117,9 @@ class _PostViewState extends State<PostView>
           ),
           Bubble(
             title: "Comments",
-            titleStyle: TextStyle(
-              color: Colors.white,
-            ),
-            iconColor: Colors.white,
-            bubbleColor: containerColor,
+            titleStyle: TextStyle(),
+            iconColor: checkTheme.isLight ? Colors.black : Colors.white,
+            bubbleColor: checkTheme.isLight ? boxColor : containerColor,
             icon: Icons.comment,
             onPress: () {
               showModalBottomSheet(
@@ -129,7 +128,7 @@ class _PostViewState extends State<PostView>
                   return Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20.0, vertical: 10.0),
-                    color: subColor,
+                    color: checkTheme.isLight ? backColorOne : subColor,
                     child: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,7 +138,6 @@ class _PostViewState extends State<PostView>
                               "All Comments",
                               style: TextStyle(
                                 fontSize: 25.0,
-                                color: Colors.white,
                               ),
                             ),
                           ),
@@ -159,7 +157,7 @@ class _PostViewState extends State<PostView>
                                         CrossAxisAlignment.start,
                                     children: snapshot.data.docs
                                         .map((DocumentSnapshot doc) {
-                                      Timestamp datetime = doc.data()['time'];
+                                      Timestamp datetime = doc.get('time');
                                       var data = DateFormat.MMMd()
                                           .format(datetime.toDate());
                                       var time = DateFormat.jm()
@@ -173,7 +171,9 @@ class _PostViewState extends State<PostView>
                                             width: MediaQuery.of(context)
                                                 .size
                                                 .width,
-                                            color: containerColor,
+                                            color: checkTheme.isLight
+                                                ? boxColor
+                                                : containerColor,
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.all(10.0),
@@ -185,9 +185,8 @@ class _PostViewState extends State<PostView>
                                                     child: ListView(
                                                       children: [
                                                         Text(
-                                                          "${doc.data()['comments']}",
+                                                          "${doc.get('comments')}",
                                                           style: TextStyle(
-                                                            color: Colors.white,
                                                             fontSize: 18.0,
                                                           ),
                                                           softWrap: true,
@@ -278,7 +277,6 @@ class _PostViewState extends State<PostView>
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20.0,
-                  color: Colors.white,
                 ),
               ),
               SizedBox(
@@ -315,9 +313,11 @@ class _PostViewState extends State<PostView>
                 widget.postModel.article,
                 style: TextStyle(
                   fontSize: 18.0,
-                  color: Colors.white,
                 ),
-              )
+              ),
+              SizedBox(
+                height: 20.0,
+              ),
             ],
           ),
         ),
