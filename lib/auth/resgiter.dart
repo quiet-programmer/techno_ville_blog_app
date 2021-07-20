@@ -54,9 +54,9 @@ class _RegsiterScreenState extends State<RegsiterScreen> {
                     ),
                     child: TextFormField(
                       validator: (val) {
-                        if (val.isEmpty) {
+                        if (val != null && val.isEmpty) {
                           return "Email must not be empty";
-                        } else if (!val.contains("@")) {
+                        } else if (!val!.contains("@")) {
                           return "Please enter a valid email";
                         } else {
                           return null;
@@ -86,9 +86,9 @@ class _RegsiterScreenState extends State<RegsiterScreen> {
                     child: TextFormField(
                       obscureText: true,
                       validator: (val) {
-                        if (val.isEmpty) {
+                        if (val != null && val.isEmpty) {
                           return "Password must not be empty";
-                        } else if (val.length < 8) {
+                        } else if (val!.length < 8) {
                           return "Password must be 8 characters long";
                         } else {
                           return null;
@@ -113,7 +113,7 @@ class _RegsiterScreenState extends State<RegsiterScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Expanded(
-                        child: FlatButton(
+                        child: TextButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
@@ -128,7 +128,7 @@ class _RegsiterScreenState extends State<RegsiterScreen> {
                       Expanded(
                         child: NiceButton(
                           onPressed: () async {
-                            if (_formKey.currentState.validate()) {
+                            if (_formKey.currentState!.validate()) {
                               setState(() {
                                 isLoading = true;
                               });

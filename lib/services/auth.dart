@@ -1,5 +1,5 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:techno_vile_blog/models/user_models.dart';
 import 'package:techno_vile_blog/services/database.dart';
 
@@ -7,12 +7,12 @@ class AuthServices {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   //create user object based on firebase user
-  UserModels _userFromFirebaseuser(User user) {
+  UserModels? _userFromFirebaseuser(User? user) {
     return user != null ? UserModels(uid: user.uid) : null;
   }
 
   //auth change user stream
-  Stream<UserModels> get user {
+  Stream<UserModels?> get user {
     return _auth.authStateChanges().map(_userFromFirebaseuser);
   }
 
@@ -20,7 +20,7 @@ class AuthServices {
   Future anonSingin() async {
     try {
       UserCredential results = await _auth.signInAnonymously();
-      User user = results.user;
+      User? user = results.user;
       return _userFromFirebaseuser(user);
     } catch (e) {
       print(e.toString());
@@ -34,8 +34,8 @@ class AuthServices {
       await _auth
           .signInWithEmailAndPassword(email: email, password: pwd)
           .then((result) {
-        User user = result.user;
-        return _userFromFirebaseuser(user);
+        User? user = result.user;
+        return _userFromFirebaseuser(user!);
       }).catchError((err) {
         if (err.code == 'user-not-found') {
           Flushbar(
@@ -65,8 +65,9 @@ class AuthServices {
     try {
       UserCredential results = await _auth.createUserWithEmailAndPassword(
           email: email, password: pwd);
-      User user = results.user;
-      await DatabaseService(uid: user.uid).setUserData("firstName", "lastName");
+      User? user = results.user;
+      await DatabaseService(uid: user!.uid)
+          .setUserData("firstName", "lastName");
       return _userFromFirebaseuser(user);
     } catch (signUpError) {
       print(signUpError.toString());

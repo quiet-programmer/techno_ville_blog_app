@@ -7,7 +7,7 @@ import 'package:techno_vile_blog/provider/theme_provider.dart';
 import 'package:techno_vile_blog/screens/post_view.dart';
 
 class PostTile extends StatefulWidget {
-  final PostModel posts;
+  final PostModel? posts;
 
   PostTile({this.posts});
 
@@ -32,21 +32,21 @@ class _PostTileState extends State<PostTile> {
               color: checkTheme.isLight ? boxColor : containerColor,
               child: ListTile(
                 title: Text(
-                  "${widget.posts.title}",
+                  "${widget.posts!.title}",
                   style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 subtitle: Text(
-                  "written by ${widget.posts.authur}",
+                  "written by ${widget.posts!.authur}",
                   style: TextStyle(
                     color: Colors.grey,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 trailing: CachedNetworkImage(
-                  imageUrl: widget.posts.image,
+                  imageUrl: '${widget.posts!.image}',
                   height: 120,
                   width: 100,
                   fit: BoxFit.cover,

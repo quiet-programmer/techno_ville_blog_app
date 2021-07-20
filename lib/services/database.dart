@@ -3,7 +3,7 @@ import 'package:techno_vile_blog/models/post_model.dart';
 import 'package:techno_vile_blog/models/user_models.dart';
 
 class DatabaseService {
-  final String uid;
+  final String? uid;
 
   DatabaseService({this.uid});
 
@@ -42,7 +42,7 @@ class DatabaseService {
   }
 
   // get user data from snapshop
-  UserDataModels _userFromSnapshop(DocumentSnapshot snapshot) {
+  UserDataModels? _userFromSnapshop(DocumentSnapshot snapshot) {
     return UserDataModels(
       uid: uid,
       firstName: snapshot.get('firstName'),
@@ -51,7 +51,7 @@ class DatabaseService {
   }
 
   // get user info
-  Stream<UserDataModels> get userData {
+  Stream<UserDataModels?> get userData {
     return _userCollections.doc(uid).snapshots().map(_userFromSnapshop);
   }
 

@@ -11,10 +11,10 @@ import 'package:techno_vile_blog/provider/theme_provider.dart';
 import 'package:techno_vile_blog/services/database.dart';
 
 class PostView extends StatefulWidget {
-  final PostModel postModel;
+  final PostModel? postModel;
 
   PostView({
-    Key key,
+    Key? key,
     this.postModel,
   }) : super(key: key);
 
@@ -26,10 +26,10 @@ class _PostViewState extends State<PostView>
     with SingleTickerProviderStateMixin {
   final DatabaseService _databaseService = DatabaseService();
 
-  String comments;
+  String? comments;
 
-  Animation<double> _animation;
-  AnimationController _animationController;
+  Animation<double>? _animation;
+  AnimationController? _animationController;
 
   @override
   void initState() {
@@ -41,7 +41,7 @@ class _PostViewState extends State<PostView>
 
     // animation for bubble up
     final curvedAnimation =
-        CurvedAnimation(curve: Curves.easeInOut, parent: _animationController);
+        CurvedAnimation(curve: Curves.easeInOut, parent: _animationController!);
     _animation = Tween<double>(begin: 0, end: 1).animate(curvedAnimation);
   }
 
@@ -58,9 +58,9 @@ class _PostViewState extends State<PostView>
 
       /// start of action button ///
       floatingActionButton: FloatingActionBubble(
-        onPress: () => _animationController.isCompleted
-            ? _animationController.reverse()
-            : _animationController.forward(),
+        onPress: () => _animationController!.isCompleted
+            ? _animationController!.reverse()
+            : _animationController!.forward(),
         iconColor: checkTheme.isLight ? Colors.black : Colors.white,
         backGroundColor: checkTheme.isLight ? boxColor : containerColor,
         iconData: Icons.mode_comment,
@@ -100,7 +100,7 @@ class _PostViewState extends State<PostView>
                             if (comments != null) {
                               _databaseService
                                   .updateDatawithComments(
-                                      comments, widget.postModel.docId)
+                                      comments!, '${widget.postModel!.docId}')
                                   .then((value) => Navigator.of(context).pop());
                             }
                           },
@@ -146,7 +146,7 @@ class _PostViewState extends State<PostView>
                           ),
                           FutureBuilder<QuerySnapshot>(
                             future: postData
-                                .doc(widget.postModel.docId)
+                                .doc(widget.postModel!.docId)
                                 .collection("comments")
                                 .get(),
                             builder: (_, snapshot) {
@@ -155,7 +155,7 @@ class _PostViewState extends State<PostView>
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
-                                    children: snapshot.data.docs
+                                    children: snapshot.data!.docs
                                         .map((DocumentSnapshot doc) {
                                       Timestamp datetime = doc.get('time');
                                       var data = DateFormat.MMMd()
@@ -263,7 +263,7 @@ class _PostViewState extends State<PostView>
                   ),
                 ),
                 child: CachedNetworkImage(
-                  imageUrl: widget.postModel.image,
+                  imageUrl: '${widget.postModel!.image}',
                   fit: BoxFit.cover,
                   height: 350.0,
                   width: MediaQuery.of(context).size.width,
@@ -273,7 +273,7 @@ class _PostViewState extends State<PostView>
                 height: 15.0,
               ),
               Text(
-                widget.postModel.title,
+                '${widget.postModel!.title}',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20.0,
@@ -283,21 +283,21 @@ class _PostViewState extends State<PostView>
                 height: 10.0,
               ),
               Text(
-                "writen by ${widget.postModel.authur}",
+                "writen by ${widget.postModel!.authur}",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.grey,
                 ),
               ),
               Text(
-                "${DateFormat.yMMMMEEEEd().format(widget.postModel.time.toDate())}",
+                "${DateFormat.yMMMMEEEEd().format(widget.postModel!.time!.toDate())}",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.grey,
                 ),
               ),
               Text(
-                "${DateFormat.jm().format(widget.postModel.time.toDate())}",
+                "${DateFormat.jm().format(widget.postModel!.time!.toDate())}",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.grey,
@@ -310,7 +310,7 @@ class _PostViewState extends State<PostView>
                 height: 20.0,
               ),
               Text(
-                widget.postModel.article,
+                '${widget.postModel!.article}',
                 style: TextStyle(
                   fontSize: 18.0,
                 ),

@@ -12,14 +12,12 @@ class TabScreen extends StatefulWidget {
 }
 
 class _TabScreenState extends State<TabScreen> {
-  final List<Map<String, Object>> _pages = [
+  final List<Map<String, Widget>> _pages = [
     {
       'page': Home(),
-      'title': 'Categories',
     },
     {
       'page': SettingsScreen(),
-      'title': 'Your Favorite',
     },
   ];
   int _selectedPageIndex = 0;

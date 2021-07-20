@@ -18,14 +18,14 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   AuthServices _userAuth = AuthServices();
 
-  File _selectedImage;
+  File? _selectedImage;
   final picker = ImagePicker();
 
   Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
-      _selectedImage = File(pickedFile.path);
+      _selectedImage = File(pickedFile!.path);
     });
   }
 
@@ -40,11 +40,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
           child: Column(
             children: [
-              StreamBuilder<UserDataModels>(
+              StreamBuilder<UserDataModels?>(
                 stream: DatabaseService(uid: user.uid).userData,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    UserDataModels userInfo = snapshot.data;
+                    UserDataModels? userInfo = snapshot.data;
                     return Container(
                         child: Column(
                       children: [
@@ -58,7 +58,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(50.0),
                                     image: DecorationImage(
-                                      image: FileImage(_selectedImage),
+                                      image: FileImage(_selectedImage!),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -83,7 +83,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           height: 10.0,
                         ),
                         Text(
-                          "${userInfo.firstName} ${userInfo.lastName}",
+                          "${userInfo!.firstName} ${userInfo.lastName}",
                           style: TextStyle(
                             fontSize: 20.0,
                           ),

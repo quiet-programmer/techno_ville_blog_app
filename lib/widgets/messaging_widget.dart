@@ -1,4 +1,3 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:techno_vile_blog/models/message_model.dart';
 
@@ -8,24 +7,24 @@ class MessagingWidget extends StatefulWidget {
 }
 
 class _MessagingWidgetState extends State<MessagingWidget> {
-  final List<MessageModel> messages = [];
+  final List<MessageModel>? messages = [];
 
   @override
   void initState() {
     super.initState();
   }
 
-  Widget buildMessage(MessageModel messageModel) {
+  Widget buildMessage(MessageModel? messageModel) {
     return ListTile(
-      title: Text(messageModel.title),
-      subtitle: Text(messageModel.body),
+      title: Text('${messageModel!.title}'),
+      subtitle: Text('${messageModel.body}'),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return ListView(
-      children: messages.map(buildMessage).toList(),
+      children: messages!.map(buildMessage).toList(),
     );
   }
 }

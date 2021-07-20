@@ -65,7 +65,7 @@ class _RegFinalState extends State<RegFinal> {
                     ),
                     child: TextFormField(
                       validator: (val) {
-                        if (val.isEmpty) {
+                        if (val != null && val.isEmpty) {
                           return "First name must not be empty";
                         } else {
                           return null;
@@ -91,7 +91,7 @@ class _RegFinalState extends State<RegFinal> {
                     ),
                     child: TextFormField(
                       validator: (val) {
-                        if (val.isEmpty) {
+                        if (val != null && val.isEmpty) {
                           return "Last name must not be empty";
                         } else {
                           return null;
@@ -111,7 +111,7 @@ class _RegFinalState extends State<RegFinal> {
                   ),
                   NiceButton(
                     onPressed: () async {
-                      if (_formKey.currentState.validate()) {
+                      if (_formKey.currentState!.validate()) {
                         var firstName = _firstName.text;
                         var lastName = _lastName.text;
                         DatabaseService(uid: user.uid)

@@ -41,7 +41,7 @@ class _SigninScreenState extends State<SigninScreen> {
       key: _scaffoldKey,
       appBar: AppBar(
         actions: [
-          FlatButton.icon(
+          TextButton.icon(
             onPressed: () async {
               setState(() {
                 isAltLoading = true;
@@ -93,9 +93,9 @@ class _SigninScreenState extends State<SigninScreen> {
                     ),
                     child: TextFormField(
                       validator: (val) {
-                        if (val.isEmpty) {
+                        if (val != null && val.isEmpty) {
                           return "Email must not be empty";
-                        } else if (!val.contains("@")) {
+                        } else if (!val!.contains("@")) {
                           return "Please enter a valid email";
                         } else {
                           return null;
@@ -129,7 +129,7 @@ class _SigninScreenState extends State<SigninScreen> {
                     child: TextFormField(
                       obscureText: true,
                       validator: (val) {
-                        if (val.isEmpty) {
+                        if (val != null && val.isEmpty) {
                           return "Password must not be empty";
                         } else {
                           return null;
@@ -150,7 +150,7 @@ class _SigninScreenState extends State<SigninScreen> {
                   Row(
                     children: [
                       Expanded(
-                        child: FlatButton(
+                        child: TextButton(
                           onPressed: () {},
                           child: Text(
                             "Forgot Password",
@@ -163,7 +163,7 @@ class _SigninScreenState extends State<SigninScreen> {
                       Expanded(
                         child: NiceButton(
                           onPressed: () async {
-                            if (_formKey.currentState.validate()) {
+                            if (_formKey.currentState!.validate()) {
                               var email = _email.text;
                               var pwd = _pwd.text;
                               setState(() {
@@ -195,7 +195,7 @@ class _SigninScreenState extends State<SigninScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                  FlatButton(
+                  TextButton(
                     onPressed: () {
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (_) {

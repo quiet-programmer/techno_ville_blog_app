@@ -4,9 +4,9 @@ import 'package:techno_vile_blog/utils/hex_to_color.dart';
 
 const Color realColor = Color.fromRGBO(50, 129, 222, 1);
 // const Color subColor = Color.fromRGBO(0, 0, 0, 1);
-Color backColor = Colors.grey[900];
-Color backColorOne = Colors.grey[100];
-Color subColor = Colors.grey[850];
+Color backColor = Colors.grey.shade900;
+Color backColorOne = Colors.grey.shade100;
+Color subColor = Colors.grey.shade800;
 
 const Color containerColor = Color.fromRGBO(42, 44, 49, 1);
 const Color boxColor = Color.fromRGBO(235, 237, 242, 1);
